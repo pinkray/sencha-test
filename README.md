@@ -1,6 +1,6 @@
 # PWA
 
-this has to work! must work again  a Demo of the Progressive Web App support in Ext JS 6.5 and Sencha Cmd 6.5.
+this has to work!   a Demo of the Progressive Web App support in Ext JS 6.5 and Sencha Cmd 6.5.
 
 ## To run
 
