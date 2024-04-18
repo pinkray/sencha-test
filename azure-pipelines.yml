@@ -1,0 +1,46 @@
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - group: polaris
+  
+steps:
+- task: SynopsysSecurityScan@1.6.0
+  displayName: 'Polaris Scan'
+  condition: not(eq(variables['Build.Reason'], 'PullRequest'))
+  inputs:
+    BRIDGE_POLARIS_SERVERURL: $(POLARIS_SERVER_URL)
+    BRIDGE_POLARIS_ACCESSTOKEN: $(POLARIS_ACCESS_TOKEN)
+    BRIDGE_POLARIS_APPLICATION_NAME: $(Build.Repository.Name)
+    BRIDGE_POLARIS_PROJECT_NAME: $(Build.Repository.Name)
+    BRIDGE_POLARIS_ASSESSMENT_TYPES: 'SCA,SAST' # Accepts Multiple Values
+    ### Uncomment below configuration to specify branch name in the Polaris Server
+    # BRIDGE_POLARIS_BRANCH_NAME: $(POLARIS_BRANCH)
+    ### Uncomment below configuration if Synopsys Bridge diagnostic files needs to be uploaded
+    # INCLUDE_DIAGNOSTICS: 'true'
+    BRIDGE_POLARIS_REPORTS_SARIF_CREATE: true # Create SARIF report and upload it as artifact
+    BRIDGE_POLARIS_REPORTS_SARIF_GROUPSCAISSUES: true # By default true
+    BRIDGE_POLARIS_REPORTS_SARIF_FILE_PATH: '/Users/tmp/report.sarif.json' # File path including file name where SARIF report should be created
+    BRIDGE_POLARIS_REPORTS_SARIF_SEVERITIES: 'CRITICAL,HIGH' # Accepts Multiple Values
+    BRIDGE_POLARIS_REPORTS_SARIF_ISSUE_TYPES: 'SAST,SCA' # Accepts Multiple Values
+
+- task: SynopsysSecurityScan@1.6.0
+  displayName: 'Polaris PR Scan'
+  condition: eq(variables['Build.Reason'], 'PullRequest')
+  inputs:
+    BRIDGE_POLARIS_SERVERURL: $(POLARIS_SERVER_URL)
+    BRIDGE_POLARIS_ACCESSTOKEN: $(POLARIS_ACCESS_TOKEN)
+    BRIDGE_POLARIS_APPLICATION_NAME: $(Build.Repository.Name)
+    BRIDGE_POLARIS_PROJECT_NAME: $(Build.Repository.Name)
+    ### Uncomment below configuration to specify branch name in the Polaris Server
+    #BRIDGE_POLARIS_BRANCH_NAME: $(POLARIS_BRANCH) # Branch name in the Polaris Server
+    ### Accepts Multiple Values
+    BRIDGE_POLARIS_ASSESSMENT_TYPES: 'SCA,SAST'
+    ### Below configuration is used to enable automatic pull request comment based on Polaris scan result
+    BRIDGE_POLARIS_PRCOMMENT_ENABLED: true
+    AZURE_TOKEN: $(System.AccessToken) # Mandatory when BRIDGE_POLARIS_PRCOMMENT_ENABLED is set to 'true'
+    ### Uncomment below configuration if Synopsys Bridge diagnostic files needs to be uploaded
+    # INCLUDE_DIAGNOSTICS: 'true'
