@@ -1,5 +1,5 @@
 # PWA
-1- Demo of the Progressive Web App support in Ext JS 6.5 and Sencha Cmd 6.5.
+Policy Demo of the Progressive Web App support in Ext JS 6.5 and Sencha Cmd 6.5.
 
 ## To run
 
